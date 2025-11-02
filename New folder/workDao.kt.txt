@@ -1,0 +1,23 @@
+package com.example.bai2
+
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Update
+import androidx.room.Query
+
+@Dao
+interface workDao{
+    @Insert
+    suspend fun insert (work: WorkEntity)
+    @Update
+    suspend fun update (work: WorkEntity)
+    @Query("SELECT * FROM Works")
+    fun getAllWork(): LiveData<List<WorkEntity>>
+    @Delete
+    suspend fun delete(work: WorkEntity)
+
+
+
+}

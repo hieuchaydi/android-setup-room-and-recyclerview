@@ -1,0 +1,56 @@
+package com.example.bai2
+
+// ListActivity.kt
+
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bai2.databinding.ActivityListBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+class ListActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityListBinding
+    private val db by lazy { DatabaseProvider.getDataBase(this) }
+    private lateinit var adapter: WorkAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        setupRecyclerView()
+        setupbackbutton()
+        observeWorks()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = WorkAdapter { work ->
+            lifecycleScope.launch {
+                db.workDao().update(work)
+            }
+        }
+        binding.rcv.apply {
+            layoutManager = LinearLayoutManager(this@ListActivity)
+            this.adapter = this@ListActivity.adapter
+        }
+    }
+
+    private fun observeWorks() {
+        lifecycleScope.launch {
+            db.workDao().getAllWork().observe(this@ListActivity) { works ->
+                adapter.submitList(works)
+            }
+        }
+    }
+    private fun setupbackbutton(){
+        binding.btnback.setOnClickListener {
+
+            finish()
+        }
+    }
+}

@@ -1,0 +1,44 @@
+// WorkAdapter.kt
+package com.example.bai2
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.bai2.databinding.ListItemBinding
+
+class WorkAdapter(
+    private val onCompleteClick: (WorkEntity) -> Unit
+) : ListAdapter<WorkEntity, WorkAdapter.WorkViewHolder>(DiffCallback) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkViewHolder {
+        val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return WorkViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: WorkViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class WorkViewHolder(private val binding: ListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(work: WorkEntity) {
+            binding.tv11.text = work.title
+            binding.tvhanchot.text = "Hạn chót: ${work.endDate}"
+            binding.tvhanchot.text = work.despcription
+            binding.ck1.isChecked = work.isCompleted
+            binding.ck1.text = if (work.isCompleted) "Đã hoàn thành" else "Chưa hoàn thành"
+
+            binding.btnsave1.setOnClickListener {
+                onCompleteClick(work.copy(isCompleted = true))
+            }
+        }
+    }
+
+    object DiffCallback : DiffUtil.ItemCallback<WorkEntity>() {
+        override fun areItemsTheSame(old: WorkEntity, new: WorkEntity) = old.id == new.id
+        override fun areContentsTheSame(old: WorkEntity, new: WorkEntity) = old == new
+    }
+}

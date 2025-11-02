@@ -1,0 +1,15 @@
+package com.example.bai2
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+@Entity(tableName = "Works")
+data class WorkEntity (
+    @PrimaryKey (autoGenerate = true)
+    val id : Int=0,
+    val title : String,
+    val despcription : String,
+    val StartDate : String,
+    val endDate : String,
+    val priority : String,
+    val isCompleted : Boolean = false
+)
